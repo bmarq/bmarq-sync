@@ -45,7 +45,7 @@ from pylab import *
 __version__ = "eval_bmarq.py v0.2, (C) 2017, Bruno Marques, INESC TEC, IPV/ESTGV"
 
 global TON, TOFF, TCYCLE, TMAX, tMaxCycle, tMinCycle
-global rnd_tDelayDistrib, tDelayDistrib, rnd_tCycleDistrib, tCycleDistrib
+global rnd_tDelayDist, tDelayDist, rnd_tCycleDist, tCycleDist
 global nSim
 global pDiscard
 global n1, n2, n3, n4
@@ -82,9 +82,9 @@ parser.add_argument('--tMaxCycle', type=float, default=900, help='Maximum value 
 parser.add_argument('--tMinCycle', type=float, default=120, help='Minimum value for TCycle (default: 120)')
 parser.add_argument('--pDiscard', type=float, default=0.01,
                     help='Initial %% of cycles to discard for estability purposes [default: 0.01 (1%%)]')
-parser.add_argument('--tDelayDistrib', type=str, default='uniform', choices={'uniform', 'gauss', 'exponential'},
+parser.add_argument('--tDelayDist', type=str, default='uniform', choices={'uniform', 'normal', 'exponential'},
                     help='Type of random distribution for delays (default: uniform)')
-parser.add_argument('--tCycleDistrib', type=str, default='uniform', choices={'uniform', 'gauss', 'exponential'},
+parser.add_argument('--tCycleDist', type=str, default='uniform', choices={'uniform', 'normal', 'exponential'},
                     help='Type of random distribution for TCycle (default: uniform)')
 
 args = parser.parse_args()
@@ -97,8 +97,8 @@ TON = args.TON
 tMaxCycle = args.tMaxCycle
 tMinCycle = args.tMinCycle
 pDiscard = args.pDiscard
-tDelayDistrib = args.tDelayDistrib
-tCycleDistrib = args.tCycleDistrib
+tDelayDist = args.tDelayDist
+tCycleDist = args.tCycleDist
 
 '''---8<------8<------8<------8<------8<------8<------8<------8<------8<--- '''
 # Main block of the program
@@ -140,28 +140,28 @@ for j in range(1, int(nSim) + 1):
   print 'running cycle %d:' % (j)
   success_counter += 1
 
-  # generate random delays between tMinCycle and tMaxCycle with 'tDelayDistrib' tDelayDistribution
+  # generate random delays between tMinCycle and tMaxCycle with 'tDelayDist' tDelayDistution
 
   # use the folowing two lines if you want to reproduce the experiment and get the same results
   # np.random.seed(j)
   # np.random.RandomState(j)
 
-  rnd_tCycleDistrib = 'np.random.' + tCycleDistrib + '(tMinCycle, tMaxCycle)'
-  TCYCLE = eval(rnd_tCycleDistrib)
+  rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle, tMaxCycle)'
+  TCYCLE = eval(rnd_tCycleDist)
   TOFF = TCYCLE - TON
 
   file_i = open('../results/data-nCycles.txt', 'w')
-  file_all = open('../results/results-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
-  file_delay1 = open('../results/data-delay-node1-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
-  file_delay2 = open('../results/data-delay-node2-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
-  file_delay3 = open('../results/data-delay-node3-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
-  file_delay4 = open('../results/data-delay-node4-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
-  file_tSensorsOn = open('../results/data-tsensors_on-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
+  file_all = open('../results/results-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_delay1 = open('../results/data-delay-node1-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_delay2 = open('../results/data-delay-node2-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_delay3 = open('../results/data-delay-node3-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_delay4 = open('../results/data-delay-node4-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_tSensorsOn = open('../results/data-tsensors_on-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
   file_tSensorsOn_percent = open(
-    '../results/data-tsensors_on-percent-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
-  file_bdk = open('../results/data-bdk-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
-  file_tSensorsOn_success = open('../results/data-tsensors_on-success-tDelayDistrib-' + str(j) + '.txt', 'w')
-  file_tcycle = open('../results/data-tcycle-tDelayDistrib-' + tCycleDistrib + '-' + str(j) + '.txt', 'w')
+    '../results/data-tsensors_on-percent-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_bdk = open('../results/data-bdk-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_tSensorsOn_success = open('../results/data-tsensors_on-success-tDelayDist-' + str(j) + '.txt', 'w')
+  file_tcycle = open('../results/data-tcycle-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
 
   a = 'cycle\tnode\tt\'k\ttk\tdelay\tt\'k-tk\tdk\tr_on\tr_off\ttsleep\tb.|dk|\ttcycle\tton\ttoff\t_sensors_on (s)\tt_sensors_on %\n'
   a = a.expandtabs(8)
@@ -175,8 +175,8 @@ for j in range(1, int(nSim) + 1):
     # np.random.seed(j + n)
     # np.random.RandomState(j + n)
 
-    rnd_tDelayDistrib = 'np.random.' + tDelayDistrib + '(0.80 * delay_1, 1.20 * delay_1)'
-    delay1 = eval(rnd_tDelayDistrib)
+    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_1, 1.20 * delay_1)'
+    delay1 = eval(rnd_tDelayDist)
 
     sampled1_tn_1 = sampled1_tn
     sampled1_tn = n * TCYCLE + delay1
@@ -188,8 +188,8 @@ for j in range(1, int(nSim) + 1):
     # np.random.seed(j + n + 1)
     # np.random.RandomState(j + n + 1)
 
-    rnd_tDelayDistrib = 'np.random.' + tDelayDistrib + '(0.80 * delay_2, 1.20 * delay_2)'
-    delay2 = eval(rnd_tDelayDistrib)
+    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_2, 1.20 * delay_2)'
+    delay2 = eval(rnd_tDelayDist)
 
     sampled2_tn_1 = sampled2_tn
     sampled2_tn = n * TCYCLE + delay2
@@ -201,8 +201,8 @@ for j in range(1, int(nSim) + 1):
     # np.random.seed(j + n + 2)
     # np.random.RandomState(j + n + 2)
 
-    rnd_tDelayDistrib = 'np.random.' + tDelayDistrib + '(0.80 * delay_3, 1.20 * delay_3)'
-    delay3 = eval(rnd_tDelayDistrib)
+    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_3, 1.20 * delay_3)'
+    delay3 = eval(rnd_tDelayDist)
 
     sampled3_tn_1 = sampled3_tn
     sampled3_tn = n * TCYCLE + delay3
@@ -214,8 +214,8 @@ for j in range(1, int(nSim) + 1):
     # np.random.seed(j + n + 3)
     # np.random.RandomState(j + n + 3)
 
-    rnd_tDelayDistrib = 'np.random.' + tDelayDistrib + '(0.80 * delay_4, 1.20 * delay_4)'
-    delay4 = eval(rnd_tDelayDistrib)
+    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_4, 1.20 * delay_4)'
+    delay4 = eval(rnd_tDelayDist)
 
     sampled4_tn_1 = sampled4_tn
     sampled4_tn = n * TCYCLE + delay4
