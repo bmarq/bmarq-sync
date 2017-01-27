@@ -59,7 +59,7 @@ global delta1_k_1, delta2_k_1, delta3_k_1
 global tsleep1_k, tsleep2_k, tsleep3_k, tsleep4_k
 global r1on, r2on, r3on, r4on
 global r1off, r3off, r3off, r4off
-global alpha, beta
+global alpha, beta, gamma, sigma
 global i_counter, hit
 global lower, upper
 global success, temp_success, delta_success, success_counter
@@ -77,14 +77,18 @@ parser.add_argument('--beta', type=float, default=10, choices=[1, 10, 50, 100],
                     help='Value for beta parameter (default: 10)')
 parser.add_argument('--gamma', type=float, default=0.80, choices={0.5, 0.6, 0.7, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0},
                     help='%% of TON for TSensorsOn success (default: 0.80)')
+parser.add_argument('--sigma', type=float, default=0.20, choices={0.05, 0.10, 0.15, 0.20, 0.25},
+                    help='Value of standard deviation for delays (default: 0.20)')
 parser.add_argument('--TON', type=float, default=60, help='Value for TON (default: 60)')
 parser.add_argument('--tMaxCycle', type=float, default=900, help='Maximum value for TCycle (default: 900)')
 parser.add_argument('--tMinCycle', type=float, default=120, help='Minimum value for TCycle (default: 120)')
 parser.add_argument('--pDiscard', type=float, default=0.01,
                     help='Initial %% of cycles to discard for estability purposes [default: 0.01 (1%%)]')
-parser.add_argument('--tDelayDist', type=str, default='uniform', choices={'uniform', 'normal', 'exponential'},
+parser.add_argument('--tDelayDist', type=str, default='uniform',
+                    choices={'uniform', 'normal', 'exponential', 'chisquare'},
                     help='Type of random distribution for delays (default: uniform)')
-parser.add_argument('--tCycleDist', type=str, default='uniform', choices={'uniform', 'normal', 'exponential'},
+parser.add_argument('--tCycleDist', type=str, default='uniform',
+                    choices={'uniform', 'normal', 'exponential', 'chisquare'},
                     help='Type of random distribution for TCycle (default: uniform)')
 
 args = parser.parse_args()
@@ -93,6 +97,7 @@ TMAX = args.maxcicles
 alpha = args.alpha  # test with 0.125; 0.50; 0.875
 beta = args.beta  # test with 1, 10, 50, 100
 gamma = args.gamma  # % of TON for TsensorsOn success
+sigma = args.sigma  # value for delays standard deviation
 TON = args.TON
 tMaxCycle = args.tMaxCycle
 tMinCycle = args.tMinCycle
@@ -106,7 +111,7 @@ tCycleDist = args.tCycleDist
 subprocess.call('clear', shell=True)  # clearing stdio
 start_t = time.clock()
 
-delay_1 = 1 / 2
+delay_1 = 0.5
 delay_2 = 1
 delay_3 = 2
 delay_4 = 5
@@ -146,11 +151,22 @@ for j in range(1, int(nSim) + 1):
   np.random.seed(j)
   np.random.RandomState(j)
 
-  rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle, tMaxCycle)'
+  if (tCycleDist == 'uniform'):
+    rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle, tMaxCycle)'
+
+  if (tCycleDist == 'normal'):
+    rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle, sigma * tMaxCycle)'
+
+  if (tCycleDist == 'exponential'):
+    rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle)'
+
+  if (tCycleDist == 'chisquare'):
+    rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle)'
+
   TCYCLE = eval(rnd_tCycleDist)
   TOFF = TCYCLE - TON
 
-  file_i = open('../results/data-nCycles.txt', 'w')
+  file_n = open('../results/data-nCycles.txt', 'w')
   file_all = open('../results/results-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
   file_delay1 = open('../results/data-delay-node1-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
   file_delay2 = open('../results/data-delay-node2-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
@@ -175,8 +191,20 @@ for j in range(1, int(nSim) + 1):
     np.random.seed(j + n)
     np.random.RandomState(j + n)
 
-    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_1, 1.20 * delay_1)'
+    if (tDelayDist == 'uniform'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '((1 - sigma) * delay_1, (1 + sigma) * delay_1)'
+
+    if (tDelayDist == 'normal'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_1, sigma * delay_1)'
+
+    if (tDelayDist == 'exponential'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_1)'
+
+    if (tDelayDist == 'chisquare'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_1)'
+
     delay1 = eval(rnd_tDelayDist)
+    # print 'delay for node 1 in cycle %d: %f3' %(n, delay1)
 
     sampled1_tn_1 = sampled1_tn
     sampled1_tn = n * TCYCLE + delay1
@@ -188,8 +216,20 @@ for j in range(1, int(nSim) + 1):
     np.random.seed(j + n + 1)
     np.random.RandomState(j + n + 1)
 
-    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_2, 1.20 * delay_2)'
+    if (tDelayDist == 'uniform'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '((1 - sigma) * delay_2, (1 + sigma) * delay_2)'
+
+    if (tDelayDist == 'normal'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_2, sigma * delay_2)'
+
+    if (tDelayDist == 'exponential'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_2)'
+
+    if (tDelayDist == 'chisquare'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_2)'
+
     delay2 = eval(rnd_tDelayDist)
+    #print 'delay for node 2 in cycle %d: %f3' %(n, delay2)
 
     sampled2_tn_1 = sampled2_tn
     sampled2_tn = n * TCYCLE + delay2
@@ -201,8 +241,20 @@ for j in range(1, int(nSim) + 1):
     np.random.seed(j + n + 2)
     np.random.RandomState(j + n + 2)
 
-    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_3, 1.20 * delay_3)'
+    if (tDelayDist == 'uniform'):
+      rnd_tDelayDist == 'np.random.' + tDelayDist + '((1 - sigma) * delay_3, (1 + sigma) * delay_3)'
+
+    if (tDelayDist == 'normal'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_3, sigma * delay_3)'
+
+    if (tDelayDist == 'exponential'):
+      rnd_tDelayDist == 'np.random.' + tDelayDist + '(delay_3)'
+
+    if (tDelayDist == 'chisquare'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_3)'
+
     delay3 = eval(rnd_tDelayDist)
+    #print 'delay for node 3 in cycle %d: %f3' %(n, delay3)
 
     sampled3_tn_1 = sampled3_tn
     sampled3_tn = n * TCYCLE + delay3
@@ -214,8 +266,20 @@ for j in range(1, int(nSim) + 1):
     np.random.seed(j + n + 3)
     np.random.RandomState(j + n + 3)
 
-    rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_4, 1.20 * delay_4)'
+    if (tDelayDist == 'uniform'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '((1 - sigma) * delay_4, (1 + sigma) * delay_4)'
+
+    if (tDelayDist == 'normal'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_4, sigma * delay_4)'
+
+    if (tDelayDist == 'exponential'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_4)'
+
+    if (tDelayDist == 'chisquare'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_4)'
+
     delay4 = eval(rnd_tDelayDist)
+    #print 'delay for node 4 in cycle %d: %f3' %(n, delay4)
 
     sampled4_tn_1 = sampled4_tn
     sampled4_tn = n * TCYCLE + delay4
@@ -426,7 +490,7 @@ for j in range(1, int(nSim) + 1):
 
       d = '{0}\n'.format(str(n))
       d = d.expandtabs(8)
-      file_i.write(d)
+      file_n.write(d)
 
       e1 = '{0}\n'.format(str(round(beta * abs(delta1_k), 3)))
       e1 = e1.expandtabs(8)
@@ -450,25 +514,25 @@ for j in range(1, int(nSim) + 1):
       success = (hit / i_counter) * 100  # in percentage
 
     if (n >= int(TMAX * pDiscard)):
-      a = '{0}\n'.format(str(success))
+      a = '{0}\n'.format(str(round(success, 3)))
       a = a.expandtabs(8)
       file_tSensorsOn_success.write(a)
 
-      a = '{0}\n'.format(str(TCYCLE))
+      a = '{0}\n'.format(str(round(TCYCLE, 3)))
       a = a.expandtabs(8)
       file_tcycle.write(a)
 
-  a = '{0}\t{1}\n'.format('total hit success', str(success))
+  a = '{0}\t{1}\n'.format('total hit success', str(round(success, 3)))
   a = a.expandtabs(8)
   file_all.write(a)
 
-  print 'hit success for cycle %d: %d' % (j, success)
+  print 'hit success for cycle %d: %d\n' % (j, success)
   temp_success = temp_success + success
 
 mean_success = temp_success / success_counter
-print 'Mean Success: %d' % (mean_success)
+print 'Mean Success: %d\n' % (mean_success)
 
-file_i.close()
+file_n.close()
 file_all.close()
 file_delay1.close()
 file_delay2.close()
@@ -480,5 +544,5 @@ file_tSensorsOn_success.close()
 
 stop_t = time.clock()
 print 'Stop processing at: %f' % (stop_t)
-print 'total processing time: %f' % (stop_t - start_t)
+print 'total processing time: %f\n' % (stop_t - start_t)
 # ***************************************************************************
