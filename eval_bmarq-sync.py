@@ -85,10 +85,10 @@ parser.add_argument('--tMinCycle', type=float, default=120, help='Minimum value 
 parser.add_argument('--pDiscard', type=float, default=0.01,
                     help='Initial %% of cycles to discard for estability purposes [default: 0.01 (1%%)]')
 parser.add_argument('--tDelayDist', type=str, default='uniform',
-                    choices={'uniform', 'normal', 'exponential', 'chisquare'},
+                    choices={'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
                     help='Type of random distribution for delays (default: uniform)')
 parser.add_argument('--tCycleDist', type=str, default='uniform',
-                    choices={'uniform', 'normal', 'exponential', 'chisquare'},
+                    choices={'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
                     help='Type of random distribution for TCycle (default: uniform)')
 
 args = parser.parse_args()
@@ -163,6 +163,9 @@ for j in range(1, int(nSim) + 1):
   if (tCycleDist == 'chisquare'):
     rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle)'
 
+  if (tCycleDist == 'poisson'):
+    rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle)'
+
   TCYCLE = eval(rnd_tCycleDist)
   TOFF = TCYCLE - TON
 
@@ -203,6 +206,9 @@ for j in range(1, int(nSim) + 1):
     if (tDelayDist == 'chisquare'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_1)'
 
+    if (tDelayDist == 'poisson'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_1)'
+
     delay1 = eval(rnd_tDelayDist)
     # print 'delay for node 1 in cycle %d: %f3' %(n, delay1)
 
@@ -226,6 +232,9 @@ for j in range(1, int(nSim) + 1):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_2)'
 
     if (tDelayDist == 'chisquare'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_2)'
+
+    if (tDelayDist == 'poisson'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_2)'
 
     delay2 = eval(rnd_tDelayDist)
@@ -253,6 +262,9 @@ for j in range(1, int(nSim) + 1):
     if (tDelayDist == 'chisquare'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_3)'
 
+    if (tDelayDist == 'poisson'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_3)'
+
     delay3 = eval(rnd_tDelayDist)
     #print 'delay for node 3 in cycle %d: %f3' %(n, delay3)
 
@@ -276,6 +288,9 @@ for j in range(1, int(nSim) + 1):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_4)'
 
     if (tDelayDist == 'chisquare'):
+      rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_4)'
+
+    if (tDelayDist == 'poisson'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_4)'
 
     delay4 = eval(rnd_tDelayDist)
