@@ -143,8 +143,8 @@ for j in range(1, int(nSim) + 1):
   # generate random delays between tMinCycle and tMaxCycle with 'tDelayDist' tDelayDistution
 
   # use the folowing two lines if you want to reproduce the experiment and get the same results
-  # np.random.seed(j)
-  # np.random.RandomState(j)
+  np.random.seed(j)
+  np.random.RandomState(j)
 
   rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle, tMaxCycle)'
   TCYCLE = eval(rnd_tCycleDist)
@@ -172,8 +172,8 @@ for j in range(1, int(nSim) + 1):
 
     # initialization for node n1
     # use the following two lines if you want to reproduce the experiment and get the same results
-    # np.random.seed(j + n)
-    # np.random.RandomState(j + n)
+    np.random.seed(j + n)
+    np.random.RandomState(j + n)
 
     rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_1, 1.20 * delay_1)'
     delay1 = eval(rnd_tDelayDist)
@@ -185,8 +185,8 @@ for j in range(1, int(nSim) + 1):
 
     # initialization for node n2
     # use the following two lines if you want to reproduce the experiment and get the same results
-    # np.random.seed(j + n + 1)
-    # np.random.RandomState(j + n + 1)
+    np.random.seed(j + n + 1)
+    np.random.RandomState(j + n + 1)
 
     rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_2, 1.20 * delay_2)'
     delay2 = eval(rnd_tDelayDist)
@@ -198,8 +198,8 @@ for j in range(1, int(nSim) + 1):
 
     # initialization for node n3
     # use the following two lines if you want to reproduce the experiment and get the same results
-    # np.random.seed(j + n + 2)
-    # np.random.RandomState(j + n + 2)
+    np.random.seed(j + n + 2)
+    np.random.RandomState(j + n + 2)
 
     rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_3, 1.20 * delay_3)'
     delay3 = eval(rnd_tDelayDist)
@@ -211,8 +211,8 @@ for j in range(1, int(nSim) + 1):
 
     # initialization for node n4
     # use the following two lines if you want to reproduce the experiment and get the same results
-    # np.random.seed(j + n + 3)
-    # np.random.RandomState(j + n + 3)
+    np.random.seed(j + n + 3)
+    np.random.RandomState(j + n + 3)
 
     rnd_tDelayDist = 'np.random.' + tDelayDist + '(0.80 * delay_4, 1.20 * delay_4)'
     delay4 = eval(rnd_tDelayDist)
