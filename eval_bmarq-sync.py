@@ -63,7 +63,7 @@ global alpha, beta, gamma, sigma
 global i_counter, hit
 global lower, upper
 global success, temp_success, delta_success, success_counter
-global ton_width, ton_width_percent
+global tsensors_on, tsensors_on_percent
 
 # ***************************************************************************
 
@@ -143,8 +143,8 @@ print 'Started processing at: %f ...\n' % (start_t)
 
 file_eval = open('../results/evaluation-readme.txt', 'w')
 f = (
-    'number of simulations: %d,\ntcycle dist: %s,\ndelay dist: %s,\nalpha = %.3f,\nbeta = %.3f,\ngamma = %.3f,\nsigma = %.3f,\nTON = %.3f\n') % (
-    nSim, tCycleDist, tDelayDist, alpha, beta, gamma, sigma, TON)
+      'number of simulations: %d\ntcycle dist: %s\ndelay dist: %s\nalpha = %.3f\nbeta = %.3f\ngamma = %.3f\nsigma = %.3f\nTON = %.3f\nminimum time for success = %.3f\n') % (
+      nSim, tCycleDist, tDelayDist, alpha, beta, gamma, sigma, TON, delta_success)
 file_eval.write(f)
 file_eval.close()
 print f
@@ -205,7 +205,7 @@ for j in range(1, int(nSim) + 1):
   file_tcycle = open('../results/data-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt',
                      'w')
 
-  a = 'cycle\tnode\tt\'k\ttk\tdelay\tt\'k-tk\tdk\tr_on\tr_off\ttsleep\tb.|dk|\ttcycle\tton\ttoff\t_sensors_on (s)\tt_sensors_on %\n'
+  a = 'cycle\tnode\tt\'k\ttk\tdelay\tt\'k-tk\tdk\tr_on\tr_off\ttsleep\tb.|dk|\ttcycle\tton\ttoff\t\tsensors_on(s)\ttsensors_on(%)\n'
   a = a.expandtabs(8)
   file_all.write(a)
 
@@ -272,7 +272,7 @@ for j in range(1, int(nSim) + 1):
     else:
       delay2 = eval(rnd_tDelayDist)
 
-    #print 'delay for node 2 in cycle %d: %f3' %(n, delay2)
+    # print 'delay for node 2 in cycle %d: %f3' %(n, delay2)
 
     sampled2_tn_1 = sampled2_tn
     sampled2_tn = n * TCYCLE + delay2
@@ -307,7 +307,7 @@ for j in range(1, int(nSim) + 1):
     else:
       delay3 = eval(rnd_tDelayDist)
 
-    #print 'delay for node 3 in cycle %d: %f3' %(n, delay3)
+    # print 'delay for node 3 in cycle %d: %f3' %(n, delay3)
 
     sampled3_tn_1 = sampled3_tn
     sampled3_tn = n * TCYCLE + delay3
@@ -342,7 +342,7 @@ for j in range(1, int(nSim) + 1):
     else:
       delay4 = eval(rnd_tDelayDist)
 
-    #print 'delay for node 4 in cycle %d: %f3' %(n, delay4)
+    # print 'delay for node 4 in cycle %d: %f3' %(n, delay4)
 
     sampled4_tn_1 = sampled4_tn
     sampled4_tn = n * TCYCLE + delay4
@@ -377,14 +377,14 @@ for j in range(1, int(nSim) + 1):
 
     lower = (r1on, r2on, r3on, r4on)
     upper = (r1off, r2off, r3off, r4off)
-    ton_width = (min(upper) - max(lower))
-    ton_width_percent = ((min(upper) - max(lower)) / TON) * 100
+    tsensors_on = (min(upper) - max(lower))
+    tsensors_on_percent = ((min(upper) - max(lower)) / TON) * 100
 
     if (n >= int(TMAX * pDiscard)):
       # if (n > 0):
       i_counter += 1
       # Node 1
-      a = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\n'.format(str(n),
+      a = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\n'.format(str(n),
                                                                                               str(n1),
                                                                                               str(
                                                                                                 round(expected1_tn, 3)),
@@ -411,7 +411,14 @@ for j in range(1, int(nSim) + 1):
                                                                                                         3)),
                                                                                               str(round(TCYCLE, 3)),
                                                                                               str(round(TON, 3)),
-                                                                                              str(round(TOFF, 3)))
+                                                                                              str(round(TOFF, 3)),
+                                                                                              str(
+                                                                                                round(
+                                                                                                  tsensors_on,
+                                                                                                  3)),
+                                                                                              str(round(
+                                                                                                tsensors_on_percent,
+                                                                                                3)))
 
       a = a.expandtabs(8)
       file_all.write(a)
@@ -421,7 +428,7 @@ for j in range(1, int(nSim) + 1):
       file_delay1.write(b1)
 
       # Node 2
-      a = '\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\n'.format(str(n2),
+      a = '\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\n'.format(str(n2),
                                                                                           str(
                                                                                             round(expected2_tn, 3)),
                                                                                           str(
@@ -446,7 +453,14 @@ for j in range(1, int(nSim) + 1):
                                                                                             delta2_k), 3)),
                                                                                           str(round(TCYCLE, 3)),
                                                                                           str(round(TON, 3)),
-                                                                                          str(round(TOFF, 3)))
+                                                                                          str(round(TOFF, 3)),
+                                                                                          str(
+                                                                                            round(
+                                                                                              tsensors_on,
+                                                                                              3)),
+                                                                                          str(round(
+                                                                                            tsensors_on_percent,
+                                                                                            3)))
       a = a.expandtabs(8)
       file_all.write(a)
 
@@ -455,7 +469,7 @@ for j in range(1, int(nSim) + 1):
       file_delay2.write(b2)
 
       # Node 3
-      a = '\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\n'.format(str(n3),
+      a = '\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\n'.format(str(n3),
                                                                                           str(
                                                                                             round(expected3_tn, 3)),
                                                                                           str(
@@ -480,7 +494,14 @@ for j in range(1, int(nSim) + 1):
                                                                                             delta3_k), 3)),
                                                                                           str(round(TCYCLE, 3)),
                                                                                           str(round(TON, 3)),
-                                                                                          str(round(TOFF, 3)))
+                                                                                          str(round(TOFF, 3)),
+                                                                                          str(
+                                                                                            round(
+                                                                                              tsensors_on,
+                                                                                              3)),
+                                                                                          str(round(
+                                                                                            tsensors_on_percent,
+                                                                                            3)))
 
       a = a.expandtabs(8)
       file_all.write(a)
@@ -530,10 +551,10 @@ for j in range(1, int(nSim) + 1):
                                                                                                                   3)),
                                                                                                         str(
                                                                                                           round(
-                                                                                                            ton_width,
+                                                                                                            tsensors_on,
                                                                                                             3)),
                                                                                                         str(round(
-                                                                                                          ton_width_percent,
+                                                                                                          tsensors_on_percent,
                                                                                                           3)))
 
       a = a.expandtabs(8)
@@ -543,11 +564,11 @@ for j in range(1, int(nSim) + 1):
       b4 = b4.expandtabs(8)
       file_delay4.write(b4)
 
-      c1 = '{0}\n'.format(str(round(ton_width, 3)))
+      c1 = '{0}\n'.format(str(round(tsensors_on, 3)))
       c1 = c1.expandtabs(8)
       file_tSensorsOn.write(c1)
 
-      c2 = '{0}\n'.format(str(round(ton_width_percent, 3)))
+      c2 = '{0}\n'.format(str(round(tsensors_on_percent, 3)))
       c2 = c2.expandtabs(8)
       file_tSensorsOn_percent.write(c2)
 
