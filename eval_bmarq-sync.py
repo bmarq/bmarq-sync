@@ -70,20 +70,21 @@ global ton_width, ton_width_percent
 parser = argparse.ArgumentParser(description='Evaluation of the bmarq-sync sycnhronization mechanism\n')
 parser.add_argument('--version', action='version', version=__version__, help='Version number of eval_bmarq.py')
 parser.add_argument('--nsim', type=int, default=1, help='Number of simulations to perform (default: 1)')
-parser.add_argument('--maxcicles', type=int, default=100, help='Maximum number of cycles per simulation (default: 100)')
+parser.add_argument('--maxcicles', type=int, default=1000,
+                    help='Maximum number of cycles per simulation (default: 1000)')
 parser.add_argument('--alpha', type=float, default=0.125, choices=[0.125, 0.50, 0.875],
                     help='Value for alpha parameter default: 0.125)')
 parser.add_argument('--beta', type=float, default=10, choices=[1, 10, 50, 100],
                     help='Value for beta parameter (default: 10)')
 parser.add_argument('--gamma', type=float, default=0.80, choices={0.5, 0.6, 0.7, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0},
                     help='%% of TON for TSensorsOn success (default: 0.80)')
-parser.add_argument('--sigma', type=float, default=0.20, choices={0.05, 0.10, 0.15, 0.20, 0.25},
+parser.add_argument('--sigma', type=float, default=0.20, choices={0.0, 0.05, 0.10, 0.15, 0.20, 0.25},
                     help='Value of standard deviation for delays (default: 0.20)')
 parser.add_argument('--TON', type=float, default=60, help='Value for TON (default: 60)')
 parser.add_argument('--tMaxCycle', type=float, default=900, help='Maximum value for TCycle (default: 900)')
 parser.add_argument('--tMinCycle', type=float, default=120, help='Minimum value for TCycle (default: 120)')
-parser.add_argument('--pDiscard', type=float, default=0.01,
-                    help='Initial %% of cycles to discard for estability purposes [default: 0.01 (1%%)]')
+parser.add_argument('--pDiscard', type=float, default=0.10,
+                    help='Initial %% of cycles to discard for estability purposes [default: 0.10 (10%%)]')
 parser.add_argument('--tDelayDist', type=str, default='uniform',
                     choices={'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
                     help='Type of random distribution for delays (default: uniform)')
@@ -138,7 +139,15 @@ hit = 0
 success = success_counter = temp_success = 0
 delta_success = gamma * TON  # gamma % of TON
 
-print 'Started processing at: %f ...' % (start_t)
+print 'Started processing at: %f ...\n' % (start_t)
+
+file_eval = open('../results/evaluation-readme.txt', 'w')
+f = (
+    'number of simulations: %d,\ntcycle dist: %s,\ndelay dist: %s,\nalpha = %.3f,\nbeta = %.3f,\ngamma = %.3f,\nsigma = %.3f\n') % (
+    nSim, tCycleDist, tDelayDist, alpha, beta, gamma, sigma)
+file_eval.write(f)
+file_eval.close()
+print f
 
 '''---8<------8<------8<------8<------8<------8<------8<------8<------8<--- '''
 for j in range(1, int(nSim) + 1):
@@ -170,17 +179,27 @@ for j in range(1, int(nSim) + 1):
   TOFF = TCYCLE - TON
 
   file_n = open('../results/data-nCycles.txt', 'w')
-  file_all = open('../results/results-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
-  file_delay1 = open('../results/data-delay-node1-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
-  file_delay2 = open('../results/data-delay-node2-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
-  file_delay3 = open('../results/data-delay-node3-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
-  file_delay4 = open('../results/data-delay-node4-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
-  file_tSensorsOn = open('../results/data-tsensors_on-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+  file_all = open(
+    '../results/results-tcycle-dist-' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_delay1 = open(
+    '../results/data-delay-node1-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_delay2 = open(
+    '../results/data-delay-node2-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_delay3 = open(
+    '../results/data-delay-node3-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_delay4 = open(
+    '../results/data-delay-node4-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_tSensorsOn = open(
+    '../results/data-tsensors_on-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt', 'w')
   file_tSensorsOn_percent = open(
-    '../results/data-tsensors_on-percent-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
-  file_bdk = open('../results/data-bdk-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
-  file_tSensorsOn_success = open('../results/data-tsensors_on-success-tDelayDist-' + str(j) + '.txt', 'w')
-  file_tcycle = open('../results/data-tcycle-tDelayDist-' + tCycleDist + '-' + str(j) + '.txt', 'w')
+    '../results/data-tsensors_on-percent-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(
+      j) + '.txt', 'w')
+  file_bdk = open('../results/data-bdk-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt',
+                  'w')
+  file_tSensorsOn_success = open(
+    '../results/data-tsensors_on-success-tcycle_' + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_tcycle = open('../results/data-tcycle_' + tCycleDist + '-delay_' + str(tDelayDist) + '-sim_' + str(j) + '.txt',
+                     'w')
 
   a = 'cycle\tnode\tt\'k\ttk\tdelay\tt\'k-tk\tdk\tr_on\tr_off\ttsleep\tb.|dk|\ttcycle\tton\ttoff\t_sensors_on (s)\tt_sensors_on %\n'
   a = a.expandtabs(8)
@@ -537,15 +556,15 @@ for j in range(1, int(nSim) + 1):
       a = a.expandtabs(8)
       file_tcycle.write(a)
 
-  a = '{0}\t{1}\n'.format('total hit success', str(round(success, 3)))
+  a = '{0}\t{1}\n'.format('Total hit success', str(round(success, 3)))
   a = a.expandtabs(8)
   file_all.write(a)
 
-  print 'hit success for cycle %d: %d\n' % (j, success)
+  print 'Success hit for cycle %d: %.1f\n' % (j, success)
   temp_success = temp_success + success
 
 mean_success = temp_success / success_counter
-print 'Mean Success: %d\n' % (mean_success)
+print 'Mean Success: %.1f\n' % (mean_success)
 
 file_n.close()
 file_all.close()
@@ -558,6 +577,6 @@ file_bdk.close()
 file_tSensorsOn_success.close()
 
 stop_t = time.clock()
-print 'Stop processing at: %f' % (stop_t)
-print 'total processing time: %f\n' % (stop_t - start_t)
+print 'Stop processing at: %.3f' % (stop_t)
+print 'total processing time: %.3f\n' % (stop_t - start_t)
 # ***************************************************************************
