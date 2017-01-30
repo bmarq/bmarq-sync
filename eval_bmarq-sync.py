@@ -80,17 +80,17 @@ parser.add_argument('--gamma', type=float, default=0.80, choices={0.5, 0.6, 0.7,
                     help='%% of TON for TSensorsOn success (default: 0.80)')
 parser.add_argument('--sigma', type=float, default=0.20, choices={0.0, 0.05, 0.10, 0.15, 0.20, 0.25},
                     help='Value of standard deviation for delays (default: 0.20)')
-parser.add_argument('--TON', type=float, default=60, help='Value for TON (default: 60)')
-parser.add_argument('--tMaxCycle', type=float, default=900, help='Maximum value for TCycle (default: 900)')
-parser.add_argument('--tMinCycle', type=float, default=120, help='Minimum value for TCycle (default: 120)')
-parser.add_argument('--pDiscard', type=float, default=0.10,
+parser.add_argument('--ton', type=float, default=60, help='Value for TON (default: 60)')
+parser.add_argument('--tmaxcycle', type=float, default=900, help='Maximum value for TCycle (default: 900)')
+parser.add_argument('--tmincycle', type=float, default=120, help='Minimum value for TCycle (default: 120)')
+parser.add_argument('--pdiscard', type=float, default=0.10,
                     help='Initial %% of cycles to discard for estability purposes [default: 0.10 (10%%)]')
-parser.add_argument('--tDelayDist', type=str, default='uniform',
-                    choices={'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
+parser.add_argument('--tdelaydist', type=str, default='uniform',
+                    choices={'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
                     help='Type of random distribution for delays (default: uniform)')
-parser.add_argument('--tCycleDist', type=str, default='uniform',
-                    choices={'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
-                    help='Type of random distribution for TCycle (default: uniform)')
+parser.add_argument('--tcycledist', type=str, default='uniform',
+                    choices={'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
+                    help='Type of random distribution for TCycle (default: uniform). If the distribution is constant, the default value equals tMinCycle')
 
 args = parser.parse_args()
 nSim = args.nsim
@@ -99,12 +99,12 @@ alpha = args.alpha  # test with 0.125; 0.50; 0.875
 beta = args.beta  # test with 1, 10, 50, 100
 gamma = args.gamma  # % of TON for TsensorsOn success
 sigma = args.sigma  # value for delays standard deviation
-TON = args.TON
-tMaxCycle = args.tMaxCycle
-tMinCycle = args.tMinCycle
-pDiscard = args.pDiscard
-tDelayDist = args.tDelayDist
-tCycleDist = args.tCycleDist
+TON = args.ton
+tMaxCycle = args.tmaxcycle
+tMinCycle = args.tmincycle
+pDiscard = args.pdiscard
+tDelayDist = args.tdelaydist
+tCycleDist = args.tcycledist
 
 '''---8<------8<------8<------8<------8<------8<------8<------8<------8<--- '''
 # Main block of the program
@@ -143,8 +143,8 @@ print 'Started processing at: %f ...\n' % (start_t)
 
 file_eval = open('../results/evaluation-readme.txt', 'w')
 f = (
-    'number of simulations: %d,\ntcycle dist: %s,\ndelay dist: %s,\nalpha = %.3f,\nbeta = %.3f,\ngamma = %.3f,\nsigma = %.3f\n') % (
-    nSim, tCycleDist, tDelayDist, alpha, beta, gamma, sigma)
+    'number of simulations: %d,\ntcycle dist: %s,\ndelay dist: %s,\nalpha = %.3f,\nbeta = %.3f,\ngamma = %.3f,\nsigma = %.3f,\nTON = %.3f\n') % (
+    nSim, tCycleDist, tDelayDist, alpha, beta, gamma, sigma, TON)
 file_eval.write(f)
 file_eval.close()
 print f
@@ -175,7 +175,11 @@ for j in range(1, int(nSim) + 1):
   if (tCycleDist == 'poisson'):
     rnd_tCycleDist = 'np.random.' + tCycleDist + '(tMinCycle)'
 
-  TCYCLE = eval(rnd_tCycleDist)
+  if (tCycleDist == 'constant'):
+    TCYCLE = tMinCycle
+  else:
+    TCYCLE = eval(rnd_tCycleDist)
+
   TOFF = TCYCLE - TON
 
   file_n = open('../results/data-nCycles.txt', 'w')
@@ -228,7 +232,11 @@ for j in range(1, int(nSim) + 1):
     if (tDelayDist == 'poisson'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_1)'
 
-    delay1 = eval(rnd_tDelayDist)
+    if (tDelayDist == 'constant'):
+      delay1 = delay_1
+    else:
+      delay1 = eval(rnd_tDelayDist)
+
     # print 'delay for node 1 in cycle %d: %f3' %(n, delay1)
 
     sampled1_tn_1 = sampled1_tn
@@ -240,6 +248,9 @@ for j in range(1, int(nSim) + 1):
     # use the following two lines if you want to reproduce the experiment and get the same results
     np.random.seed(j + n + 1)
     np.random.RandomState(j + n + 1)
+
+    if (tDelayDist == 'constant'):
+      rnd_tDelayDist = delay_2
 
     if (tDelayDist == 'uniform'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '((1 - sigma) * delay_2, (1 + sigma) * delay_2)'
@@ -256,7 +267,11 @@ for j in range(1, int(nSim) + 1):
     if (tDelayDist == 'poisson'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_2)'
 
-    delay2 = eval(rnd_tDelayDist)
+    if (tDelayDist == 'constant'):
+      delay2 = delay_2
+    else:
+      delay2 = eval(rnd_tDelayDist)
+
     #print 'delay for node 2 in cycle %d: %f3' %(n, delay2)
 
     sampled2_tn_1 = sampled2_tn
@@ -268,6 +283,9 @@ for j in range(1, int(nSim) + 1):
     # use the following two lines if you want to reproduce the experiment and get the same results
     np.random.seed(j + n + 2)
     np.random.RandomState(j + n + 2)
+
+    if (tDelayDist == 'constant'):
+      rnd_tDelayDist = delay_3
 
     if (tDelayDist == 'uniform'):
       rnd_tDelayDist == 'np.random.' + tDelayDist + '((1 - sigma) * delay_3, (1 + sigma) * delay_3)'
@@ -284,7 +302,11 @@ for j in range(1, int(nSim) + 1):
     if (tDelayDist == 'poisson'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_3)'
 
-    delay3 = eval(rnd_tDelayDist)
+    if (tDelayDist == 'constant'):
+      delay3 = delay_3
+    else:
+      delay3 = eval(rnd_tDelayDist)
+
     #print 'delay for node 3 in cycle %d: %f3' %(n, delay3)
 
     sampled3_tn_1 = sampled3_tn
@@ -296,6 +318,9 @@ for j in range(1, int(nSim) + 1):
     # use the following two lines if you want to reproduce the experiment and get the same results
     np.random.seed(j + n + 3)
     np.random.RandomState(j + n + 3)
+
+    if (tDelayDist == 'constant'):
+      rnd_tDelayDist = delay_4
 
     if (tDelayDist == 'uniform'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '((1 - sigma) * delay_4, (1 + sigma) * delay_4)'
@@ -312,7 +337,11 @@ for j in range(1, int(nSim) + 1):
     if (tDelayDist == 'poisson'):
       rnd_tDelayDist = 'np.random.' + tDelayDist + '(delay_4)'
 
-    delay4 = eval(rnd_tDelayDist)
+    if (tDelayDist == 'constant'):
+      delay4 = delay_4
+    else:
+      delay4 = eval(rnd_tDelayDist)
+
     #print 'delay for node 4 in cycle %d: %f3' %(n, delay4)
 
     sampled4_tn_1 = sampled4_tn

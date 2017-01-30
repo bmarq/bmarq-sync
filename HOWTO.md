@@ -25,5 +25,6 @@ optional arguments:
   --tMaxCycle TMAXCYCLE		Maximum value for TCycle (default: 900)
   --tMinCycle TMINCYCLE		Minimum value for TCycle (default: 120)
   --pDiscard PDISCARD   Initial % of cycles to discard for estability purposes	[default: 0.10 (10%)]
-  --tDelayDist {normal,uniform,chisquare,poisson,exponential}	Type of random distribution for delays (default: uniform)
-  --tCycleDist {normal,uniform,chisquare,poisson,exponential}	Type of random distribution for TCycle (default: uniform)
+  --tDelayDist {constant, normal,uniform,chisquare,poisson,exponential}	Type of random distribution for delays (default: uniform)
+  --tCycleDist {constant, normal,uniform,chisquare,poisson,exponential}	Type of random distribution for TCycle (default: uniform).
+                            If the distribution is constant, the default value equals tMinCycle.
