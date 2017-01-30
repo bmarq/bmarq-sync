@@ -66,7 +66,6 @@ global success, temp_success, delta_success, success_counter
 global tsensors_on, tsensors_on_percent
 
 # ***************************************************************************
-
 parser = argparse.ArgumentParser(description='Evaluation of the bmarq-sync sycnhronization mechanism\n')
 parser.add_argument('--version', action='version', version=__version__, help='Version number of eval_bmarq.py')
 parser.add_argument('--nsim', type=int, default=1, help='Number of simulations to perform (default: 1)')
@@ -106,7 +105,7 @@ pDiscard = args.pdiscard
 tDelayDist = args.tdelaydist
 tCycleDist = args.tcycledist
 
-'''---8<------8<------8<------8<------8<------8<------8<------8<------8<--- '''
+# ***************************************************************************
 # Main block of the program
 
 subprocess.call('clear', shell=True)  # clearing stdio
@@ -136,9 +135,12 @@ n4 = 4  # Node 4
 
 i_counter = 0
 hit = 0
+
 success = success_counter = temp_success = 0
 delta_success = gamma * TON  # gamma % of TON
+tsensors_on = tsensors_on_percent = 0.00
 
+# ***************************************************************************
 print 'Started processing at: %f ...\n' % (start_t)
 
 file_eval = open('../results/evaluation-readme.txt', 'w')
@@ -149,7 +151,7 @@ file_eval.write(f)
 file_eval.close()
 print f
 
-'''---8<------8<------8<------8<------8<------8<------8<------8<------8<--- '''
+# ***************************************************************************
 for j in range(1, int(nSim) + 1):
   print 'running cycle %d:' % (j)
   success_counter += 1
