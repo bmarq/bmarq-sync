@@ -140,7 +140,7 @@ start_t = time.clock()
 # ***************************************************************************
 print 'Started processing at: %f ...\n' % (start_t)
 
-file_eval = open('../results/evaluation-parameters.txt', 'w')
+file_eval = open('./results/evaluation-parameters.txt', 'w')
 f = (
       'number of simulations: %d\ncycle dist: %s\ndelay dist: %s\nalpha = %.3f\nbeta = %.1f\ngamma = %.2f\nsigma = %.2f\ntMinCycle = %.1f\ntMaxCycle = %.1f\nTON = %.1f\nMinimum time for simultaneous Sensors On for success consideration = %.2f (gamma * TON) \nnumber of cycles: %d\nIgnore first %.2f * 100 %%\n') % (
       NSIM, cycleDist, delayDist, alpha, beta, gamma, sigma, TMINCYCLE, TMAXCYCLE, TON, delta_success, MAXCICLES, discard)
@@ -150,7 +150,7 @@ file_eval.close()
 print f
 
 file_tSensorsOn_success = open(
-    '../results/data-tsensors_on-success-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '.txt', 'w')
+    './results/data-tsensors_on-success-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '.txt', 'w')
 
 
 # ***************************************************************************
@@ -216,78 +216,78 @@ for j in range(1, int(NSIM) + 1):
   hit = 0
 
   # ***************************************************************************
-  file_n = open('../results/data-nCycles.txt', 'w')
+  file_n = open('./results/data-nCycles.txt', 'w')
 
   file_all = open(
-    '../results/results-tcycle-dist_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/results-tcycle-dist_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_sim_log = open('../results/data-log-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_sim_log = open('./results/data-log-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay1 = open(
-    '../results/data-delay-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay2 = open(
-    '../results/data-delay-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay3 = open(
-    '../results/data-delay-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay4 = open(
-    '../results/data-delay-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_tSensorsOn = open(
-    '../results/data-tsensors_on-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-tsensors_on-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_tSensorsOn_percent = open(
-    '../results/data-tsensors_on-percent-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(
+    './results/data-tsensors_on-percent-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(
       j) + '.txt', 'w')
 
-  file_tcycle = open('../results/data-tcycle-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt',                   'w')
+  file_tcycle = open('./results/data-tcycle-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt',                   'w')
 
-  file_t_expected_node1 = open('../results/data-expected-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_expected_node1 = open('./results/data-expected-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_expected_node2 = open('../results/data-expected-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_expected_node2 = open('./results/data-expected-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_expected_node3 = open('../results/data-expected-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_expected_node3 = open('./results/data-expected-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_expected_node4 = open('../results/data-expected-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_expected_node4 = open('./results/data-expected-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
 
-  file_t_real_node1 = open('../results/data-real-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_real_node1 = open('./results/data-real-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_real_node2 = open('../results/data-real-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_real_node2 = open('./results/data-real-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_real_node3 = open('../results/data-real-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_real_node3 = open('./results/data-real-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_real_node4 = open('../results/data-real-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_real_node4 = open('./results/data-real-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_bdk_node1 = open(
-    '../results/data-sleepOffset-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-sleepOffset-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_bdk_node2 = open(
-    '../results/data-sleepOffset-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-sleepOffset-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_bdk_node3 = open(
-    '../results/data-sleepOffset-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-sleepOffset-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_bdk_node4 = open(
-    '../results/data-sleepOffset-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-sleepOffset-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_delta_node1 = open('../results/data-delta_n-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_delta_node1 = open('./results/data-delta_n-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_delta_node2 = open('../results/data-delta_n-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_delta_node2 = open('./results/data-delta_n-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_delta_node3 = open('../results/data-delta_n-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_delta_node3 = open('./results/data-delta_n-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_delta_node4 = open('../results/data-delta_n-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_delta_node4 = open('./results/data-delta_n-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_DELTA_node1 = open('../results/data-DELTA__n-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_DELTA_node1 = open('./results/data-DELTA__n-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_DELTA_node2 = open('../results/data-DELTA__n-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_DELTA_node2 = open('./results/data-DELTA__n-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_DELTA_node3 = open('../results/data-DELTA__n-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_DELTA_node3 = open('./results/data-DELTA__n-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_t_DELTA_node4 = open('../results/data-DELTA__n-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+  file_t_DELTA_node4 = open('./results/data-DELTA__n-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
   # ***************************************************************************
   a = 'Simulation\t%d\n' % (j)
   a = a.expandtabs(4)
