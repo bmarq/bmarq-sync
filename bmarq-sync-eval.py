@@ -109,7 +109,9 @@ parser.add_argument('--cycledist', type=str, default='uniform',
 parser.add_argument('--rndseed', type=str, default='F',
                     choices={'True', 'T', 'False', 'F'},
                     help='Use prededined random seeds to reproduce experiments (T)rue/(F)alse (default: (F)alse)')
+
 args = parser.parse_args()
+
 NSIM = args.nsim
 MAXCICLES = args.maxcycles
 alpha = args.alpha  # test with 0.125; 0.50; 0.875
@@ -159,9 +161,9 @@ for j in range(1, int(NSIM) + 1):
   status1_n = status2_n = status3_n = status4_n = tSensorsOnSuccess = 'FAIL'
 
   delay1_n = delay_1 = delay1 = 0.5   # Initial delay for Node 1
-  delay2_n = delay_2 = delay2 = 1.0   #1.0  # Initial delay for Node 2
-  delay3_n = delay_3 = delay3 = 2.0   #2.000  # Initial delay for Node 3
-  delay4_n = delay_4 = delay4 = 5.0   #5.000  # Initial delay for Node 4
+  delay2_n = delay_2 = delay2 = 1.0   # Initial delay for Node 2
+  delay3_n = delay_3 = delay3 = 2.0   # Initial delay for Node 3
+  delay4_n = delay_4 = delay4 = 5.0   # Initial delay for Node 4
 
   delay1_n_1 = delay1_n
   delay2_n_1 = delay2_n
@@ -171,11 +173,11 @@ for j in range(1, int(NSIM) + 1):
   delta_success = gamma * TON  # gamma % of TON
   temp_success = 0.00
 
-  expected1_n = expected2_n = expected3_n = expected4_n = 0.000  # t'k for nodes 1, 2, 3 and 4 (expected reception time for packet k)
+  expected1_n = expected2_n = expected3_n = expected4_n = 0.000  # t'n for nodes 1, 2, 3 and 4 (expected reception time for packet n)
   expected1_n_1 = expected2_n_1 = expected3_n_1 = expected4_n_1 = 0.000
 
-  real1_n = real2_n = real3_n = real4_n = 0.000  # tk -1 for nodes 1, 2, 3 and 4 (real reception time for packet k-1 [actual (k)])
-  real1_n_1 = real2_n_1 = real3_n_1 = real4_n_1 = 0.000  # tk -1 for nodes 1, 2, 3 and 4 (real reception time for packet k-1 [anterior (k-1)])
+  real1_n = real2_n = real3_n = real4_n = 0.000  # tn-1 for nodes 1, 2, 3 and 4 (real reception time for packet n-1 [actual (n)])
+  real1_n_1 = real2_n_1 = real3_n_1 = real4_n_1 = 0.000  # tn-1 for nodes 1, 2, 3 and 4 (real reception time for packet n-1 [anterior (n-1)])
 
   delta1_n = delta2_n = delta3_n = delta4_n = 0.000
   delta1_n_1 = delta2_n_1 = delta3_n_1 = delta4_n_1 = 0.000
@@ -297,12 +299,10 @@ for j in range(1, int(NSIM) + 1):
   a = 'Cycle\tNode\tDelay\tReal\tExpect.\tDELTA\tdn\trOn\trOff\tTSleep\tb.|dn|\tTcycle\tTON\tTOFF\tStatus\tTSensorsOn\tTSensorsOn(%)\n'
   a = a.expandtabs(4)
   file_all.write(a)
-  #print a
 
   a = 'TON\t%.3f\tTSensorsOnSuccess\t%.3f\n\n' % (round(TON, 3), round((gamma * TON),3))
   a = a.expandtabs(4)
   file_sim_log.write(a)
-  #print a
 
   # ***************************************************************************
   success_counter += 1
@@ -633,31 +633,25 @@ for j in range(1, int(NSIM) + 1):
     a = 'TCYCLE=\t%.3f\tTOFF\t%.3f\n' % (round(TCYCLE, 3), round(TOFF, 3))
     a = a.expandtabs(4)
     file_sim_log.write(a)
-    #print a
 
     a = 'r1on_n\t%.3f\tr1off_n\t%.3f\n' % (round(r1on_n, 3), round(r1off_n, 3))
     file_sim_log.write(a)
-    #print a
 
     a = 'r2on_n\t%.3f\tr2off_n\t%.3f\n' % (round(r2on_n, 3), round(r2off_n, 3))
     a = a.expandtabs(4)
     file_sim_log.write(a)
-    #print a
 
     a = 'r3on_n\t%.3f\tr3off_n\t%.3f\n' % (round(r3on_n, 3), round(r3off_n, 3))
     a = a.expandtabs(4)
     file_sim_log.write(a)
-    #print a
 
     a = 'r4on_n\t%.3f\tr4off_n\t%.3f\n' % (round(r4on_n, 3), round(r4off_n, 3))
     a = a.expandtabs(4)
     file_sim_log.write(a)
-    #print a
 
     a = 'lower_t\t%.3f\tupper_t\t%.3f\ttSensorsOn(s)\t%.3f\ttSensorsOn(%%)\t%.3f\t%s\n\n'%(round(max(lower), 3), round(min(upper), 3), round(tsensors_on, 3), round(tsensors_on_percent, 3), tSensorsOnSuccess)
     a = a.expandtabs(4)
     file_sim_log.write(a)
-    #print a
 
     if (n >= int(MAXCICLES * discard)):
       n_counter +=1
@@ -917,6 +911,7 @@ for j in range(1, int(NSIM) + 1):
       g4 = '{0}\n'.format(str(round(real4_n, 3)))
       g4 = g4.expandtabs(4)
       file_t_real_node4.write(g4)
+
 
       # ***************************************************************************
       f = '{0}\n'.format(str(n))
