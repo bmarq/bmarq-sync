@@ -41,7 +41,7 @@ from pylab import *
 
 __version__ = 'bmarq-sync-eval.py v1.0, (C)2017, Bruno Marques, INESC TEC, IPV/ESTGV, (bmarq@estgv.ipv.pt)'
 
-global TON, TOFF, TCYCLE, MAXCICLES, TMAXCYCLE, TMINCYCLE, RNDSEED
+global TON, TOFF, TCYCLE, MAXCICLES, TMAXCYCLE, TMINCYCLE, RNDSEED, NUMSIM
 global tCycle1_n, tCycle2_n, tCycle3_n, tCycle4_n
 global tCycle1_n_1, tCycle2_n_1, tCycle3_n_1, tCycle4_n_1
 global tOn1_n, tOn2_n, tOn3_n, tOn4_n
@@ -49,7 +49,6 @@ global tOn1_n_1, tOn2_n_1, tOn3_n_1, tOn4_n_1
 global tOff1_n, tOff2_n, tOff3_n, tOff4_n
 global tOff1_n_1, tOff2_n_1, tOff3_n_1, tOff4_n_1
 global rnd_delayDist, delayDist, rnd_cycleDist, cycleDist
-global NSIM
 global discard
 global n1, n2, n3, n4
 global delay_1, delay_2, delay_3, delay_4
@@ -84,20 +83,20 @@ global tsensors_on, tsensors_on_percent, tSensorsOnSuccess
 # ***************************************************************************
 parser = argparse.ArgumentParser(description='Evaluation of the bmarq-sync sycnhronization mechanism\n')
 parser.add_argument('--version', action='version', version=__version__, help='Version number of eval_bmarq.py')
-parser.add_argument('--nsim', type=int, default=1, help='Number of simulations to perform (default: 1)')
+parser.add_argument('--numsim', type=int, default=1, help='Number of simulations to perform (default: 1)')
 parser.add_argument('--maxcycles', type=int, default=100,
                     help='Maximum number of cycles per simulation (default: 100)')
-parser.add_argument('--alpha', type=float, default=0.125, choices=[0.01, 0.05, 0.1, 0.125, 0.25, 0.375, 0.50, 0.625, 0.75, 0.875, 0.9, 0.95, 0.99],
+parser.add_argument('--alpha', type=float, default=0.125, choices=[0.01, 0.125, 0.25, 0.50, 0.75, 0.875, 0.99],
                     help='Value for alpha parameter (default: 0.125)')
-parser.add_argument('--beta', type=float, default=1, choices=[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10],
+parser.add_argument('--beta', type=float, default=1, choices=[1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],
                     help='Value for beta parameter (default: 10)')
-parser.add_argument('--gamma', type=float, default=0.80, choices={0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.0},
+parser.add_argument('--gamma', type=float, default=0.80, choices={0.5, 0.6, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95},
                     help='%% of TON for TSensorsOn success (default: 0.80)')
 parser.add_argument('--sigma', type=float, default=0.20, choices={0.0, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25},
-                    help='Value of standard deviation for delays (default: 0.20)')
-parser.add_argument('--ton', type=float, default=45, help='Value for TON (default: 45)')
+                    help='Value of standard deviation for the generated delays (default: 0.20)')
+parser.add_argument('--ton', type=float, default=60, help='Value for TON (default: 60)')
 parser.add_argument('--tmaxcycle', type=float, default=3600, help='Maximum value for TCycle (default: 3600)')
-parser.add_argument('--tmincycle', type=float, default=60, help='Minimum value for TCycle (default: 60)')
+parser.add_argument('--tmincycle', type=float, default=120, help='Minimum value for TCycle (default: 120)')
 parser.add_argument('--discard', type=float, default=0.10,
                     help='Initial %% of cycles to discard for estability purposes [default: 0.10 (10%%)]')
 parser.add_argument('--delaydist', type=str, default='uniform',
@@ -106,18 +105,17 @@ parser.add_argument('--delaydist', type=str, default='uniform',
 parser.add_argument('--cycledist', type=str, default='uniform',
                     choices={'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'},
                     help='Type of random distribution for TCycle (default: uniform). If the distribution is constant, the default value equals TMINCYCLE')
-parser.add_argument('--rndseed', type=str, default='F',
+parser.add_argument('--rndseed', type=str, default='T',
                     choices={'True', 'T', 'False', 'F'},
-                    help='Use prededined random seeds to reproduce experiments (T)rue/(F)alse (default: (F)alse)')
+                    help='Use predefined random seeds to reproduce experiments (T)rue/(F)alse (default: (T)rue)')
 
 args = parser.parse_args()
-
-NSIM = args.nsim
+NUMSIM = args.numsim
 MAXCICLES = args.maxcycles
-alpha = args.alpha  # test with 0.125; 0.50; 0.875
-beta = args.beta  # test with 1, 10, 50, 100
-gamma = args.gamma  # % of TON for TsensorsOn success
-sigma = args.sigma  # value for delays standard deviation
+alpha = args.alpha
+beta = args.beta
+gamma = args.gamma
+sigma = args.sigma
 TMAXCYCLE = args.tmaxcycle
 TMINCYCLE = args.tmincycle
 discard = args.discard
@@ -145,19 +143,15 @@ print 'Started processing at: %f ...\n' % (start_t)
 file_eval = open('./results/evaluation-parameters.txt', 'w')
 f = (
       'number of simulations: %d\ncycle dist: %s\ndelay dist: %s\nalpha = %.3f\nbeta = %.1f\ngamma = %.2f\nsigma = %.2f\ntMinCycle = %.1f\ntMaxCycle = %.1f\nTON = %.1f\nMinimum time for simultaneous Sensors On for success consideration = %.2f (gamma * TON) \nnumber of cycles: %d\nIgnore first %.2f * 100 %%\n') % (
-      NSIM, cycleDist, delayDist, alpha, beta, gamma, sigma, TMINCYCLE, TMAXCYCLE, TON, delta_success, MAXCICLES, discard)
+      NUMSIM, cycleDist, delayDist, alpha, beta, gamma, sigma, TMINCYCLE, TMAXCYCLE, TON, delta_success, MAXCICLES, discard)
 file_eval.write(f)
 file_eval.close()
 
 print f
 
-file_tSensorsOn_success = open(
-    './results/data-tsensors_on-success-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '.txt', 'w')
-
-
 # ***************************************************************************
-for j in range(1, int(NSIM) + 1):
-
+for j in range(1, int(NUMSIM) + 1):
+  # Initial values declaration for the start of each simulation
   status1_n = status2_n = status3_n = status4_n = tSensorsOnSuccess = 'FAIL'
 
   delay1_n = delay_1 = delay1 = 0.5   # Initial delay for Node 1
@@ -196,7 +190,6 @@ for j in range(1, int(NSIM) + 1):
   sleepOffset1_n = sleepOffset2_n = sleepOffset3_n = sleepOffset4_n = 0.000
   sleepOffset1_n_1 = sleepOffset2_n_1 = sleepOffset3_n_1 = sleepOffset4_n_1 = 0.000
 
-
   tOff1_n = tOff2_n = tOff3_n = tOff4_n = 0.000
   tOff1_n_1 = tOff2_n_1 = tOff3_n_1 = tOff4_n_1 = 0.000
 
@@ -209,10 +202,6 @@ for j in range(1, int(NSIM) + 1):
   t1f_n_1 = t2f_n_1 = t3f_n_1 = t4f_n_1 = 0.0000
 
   tsensors_on = tsensors_on_percent = 0.00
-
-  #TCYCLE = TMINCYCLE
-  #TOFF = TCYCLE - TON
-
   success = success_counter = 0
   n_counter = 0
   hit = 0
@@ -242,6 +231,10 @@ for j in range(1, int(NSIM) + 1):
 
   file_tSensorsOn_percent = open(
     './results/data-tsensors_on-percent-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(
+      j) + '.txt', 'w')
+
+  file_tSensorsOn_success = open(
+    './results/data-tsensors_on-success-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(
       j) + '.txt', 'w')
 
   file_tcycle = open('./results/data-tcycle-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt',                   'w')
@@ -290,11 +283,11 @@ for j in range(1, int(NSIM) + 1):
   file_t_DELTA_node3 = open('./results/data-DELTA__n-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_t_DELTA_node4 = open('./results/data-DELTA__n-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
+
   # ***************************************************************************
   a = 'Simulation\t%d\n' % (j)
   a = a.expandtabs(4)
   file_all.write(a)
-  print a
 
   a = 'Cycle\tNode\tDelay\tReal\tExpect.\tDELTA\tdn\trOn\trOff\tTSleep\tb.|dn|\tTcycle\tTON\tTOFF\tStatus\tTSensorsOn\tTSensorsOn(%)\n'
   a = a.expandtabs(4)
@@ -312,7 +305,6 @@ for j in range(1, int(NSIM) + 1):
     a = 'Cycle\t%d\n' % (n)
     a = a.expandtabs(4)
     file_sim_log.write(a)
-    print a
 
     # ***************************************************************************
     # generate delays for nodes for next cycle
@@ -548,7 +540,6 @@ for j in range(1, int(NSIM) + 1):
       else:
         status4_n = 'FAIL'
 
-
     # ***************************************************************************
     # Node 1
     delta1_n_1 = delta1_n
@@ -617,9 +608,6 @@ for j in range(1, int(NSIM) + 1):
     lower = (r1on_n, r2on_n, r3on_n, r4on_n)
     upper = (r1off_n, r2off_n, r3off_n, r4off_n)
 
-    #lower = (r1on_n, r2on_n)
-    #upper = (r1off_n, r2off_n)
-
     tsensors_on = (min(upper) - max(lower))
     tsensors_on_percent = (tsensors_on / TON) * 100
 
@@ -627,8 +615,6 @@ for j in range(1, int(NSIM) + 1):
       tSensorsOnSuccess = 'Success'
     else:
       tSensorsOnSuccess = 'Fail'
-
-    #print max(lower), min(upper), tsensors_on, tsensors_on_percent, tSensorsOnSuccess
 
     a = 'TCYCLE=\t%.3f\tTOFF\t%.3f\n' % (round(TCYCLE, 3), round(TOFF, 3))
     a = a.expandtabs(4)
@@ -660,6 +646,10 @@ for j in range(1, int(NSIM) + 1):
         hit += 1
 
       success = (hit / (n_counter-1)) * 100  # in percentage
+
+      a = '{0}\n'.format(str(round(success, 3)))
+      a = a.expandtabs(4)
+      file_tSensorsOn_success.write(a)
 
       # Node 1
       a = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\n'.format(str(n),
@@ -912,7 +902,6 @@ for j in range(1, int(NSIM) + 1):
       g4 = g4.expandtabs(4)
       file_t_real_node4.write(g4)
 
-
       # ***************************************************************************
       f = '{0}\n'.format(str(n))
       f = f.expandtabs(4)
@@ -930,16 +919,10 @@ for j in range(1, int(NSIM) + 1):
       c2 = c2.expandtabs(4)
       file_tSensorsOn_percent.write(c2)
 
-
   a = '{0}\t{1}\n'.format('Total hit success', str(round(success, 3)))
   a = a.expandtabs(4)
   file_all.write(a)
 
-  a = '{0}\n'.format(str(round(success, 3)))
-  a = a.expandtabs(4)
-  file_tSensorsOn_success.write(a)
-
-  temp_success += success
   print 'Simulation %d: hit = %d, n. cycles = %d, success = %.3f' % (j, hit, (n_counter-1), success)
 
   file_n.close()
@@ -979,9 +962,6 @@ for j in range(1, int(NSIM) + 1):
   file_t_DELTA_node2.close()
   file_t_DELTA_node3.close()
   file_t_DELTA_node4.close()
-
-mean_success = temp_success / NSIM
-print '\nMean Success: %.2f\n' % (mean_success)
 
 stop_t = time.clock()
 print 'Stop processing at: %.3f' % (stop_t)
