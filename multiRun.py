@@ -63,9 +63,9 @@ parser.add_argument('--version', action='version', version=__version__, help='Ve
 args = parser.parse_args()
 
 # ***************************************************************************
-alpha = sorted({0.125, 0.5, 0.875})
+alpha = sorted({0.125, 0.50, 0.875})
 beta = sorted({1, 2, 3, 4, 5})
-gamma = sorted({0.5, 0.6, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95})
+gamma = sorted({0.5, 0.75, 0.80, 0.85, 0.90, 0.95})
 cycledist = sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'})
 delaydist = sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'})
 counter = 0
