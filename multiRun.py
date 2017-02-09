@@ -82,6 +82,12 @@ if not os.path.isfile(args.progname):
   print "File not found:", args.progname
   sys.exit(1)
 
+if not os.path.exists('results'):
+  os.makedirs('results')
+
+if not os.path.exists('graphs'):
+  os.makedirs('graphs')
+
 for t in cycledist:
   for d in delaydist:
     for g in gamma:

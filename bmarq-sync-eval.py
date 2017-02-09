@@ -135,6 +135,12 @@ delta_success = gamma * TON
 subprocess.call('clear', shell=True)  # clearing stdio
 start_t = time.clock()
 
+# if not os.path.exists('results'):
+#  os.makedirs('results')
+
+# if not os.path.exists('graphs'):
+#  os.makedirs('graphs')
+
 # ***************************************************************************
 print 'Started processing at: %f ...\n' % (start_t)
 
