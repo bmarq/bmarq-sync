@@ -68,8 +68,8 @@ beta = sorted({1, 2, 3, 4, 5})
 gamma = sorted({0.5, 0.6, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95})
 cycledist = sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'})
 delaydist = sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'})
-
 counter = 0
+
 # ***************************************************************************
 # Main block of the program
 subprocess.call('clear', shell=True)  # clearing stdio
