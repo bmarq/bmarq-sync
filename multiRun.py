@@ -56,7 +56,7 @@ parser.add_argument('--progname', default='./bmarq-sync-eval.py',
                     help='Name of python script (default is <bmarq-sync-eval.py>)')
 parser.add_argument('--runs', type=int, default=25, dest='runs', metavar="N",
                     help='Run <PROGNAME>  RUNS times (default is 25)')
-parser.add_argument('--cycles', type=long, default=10E5,
+parser.add_argument('--cycles', type=long, default=1000000,
                     help='Maximum number of cycles per simulation (default is 10E5)')
 parser.add_argument('--version', action='version', version=__version__, help='Version number of multiRun.py')
 
@@ -95,7 +95,7 @@ for t in cycledist:
         for b in beta:
           cmd = args.progname + ' --numsim=' + str(args.runs) + ' --maxcycles=' + str(args.cycles) + ' --cycledist=' + str(t) + ' --delaydist=' + str(d) + ' --gamma=' + str(g) + ' --alpha=' + str(a) + ' --beta=' + str(b)
           #print cmd
-          os.system(cmd)
+          # os.system(cmd)
           counter += 1
 
 stop_t = time.clock()
