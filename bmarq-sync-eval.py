@@ -87,7 +87,7 @@ parser.add_argument('--maxcycles', type=long, default=100,
 parser.add_argument('--alpha', type=float, default=0.125, choices=sorted({0.01, 0.125, 0.25, 0.50, 0.75, 0.875, 0.99}),
                     help='Value for alpha parameter (defaultis 0.125)')
 parser.add_argument('--beta', type=float, default=1, choices=sorted({1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5}),
-                    help='Value for beta parameter (default is 10)')
+                    help='Value for beta parameter (default is 1')
 parser.add_argument('--gamma', type=float, default=0.80, choices=sorted({0.5, 0.75, 0.80, 0.85, 0.90, 0.95}),
                     help='%% of TON for TSensorsOn success (default is 0.80)')
 parser.add_argument('--sigma', type=float, default=0.20, choices=sorted({0.0, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25}),
@@ -98,10 +98,12 @@ parser.add_argument('--tmincycle', type=float, default=120, help='Minimum value 
 parser.add_argument('--discard', type=float, default=0.10,
                     help='Initial %% of cycles to discard for estability purposes (default is 0.10 (10%%))')
 parser.add_argument('--delaydist', type=str, default='uniform',
-                    choices=sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'}),
+                    choices=sorted(
+                      {'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson', 'pareto', 'weibull'}),
                     help='Type of random distribution for delays (default is uniform)')
 parser.add_argument('--cycledist', type=str, default='uniform',
-                    choices=sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson'}),
+                    choices=sorted(
+                      {'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson', 'pareto', 'weibull'}),
                     help='Type of random distribution for TCycle (default is uniform). If the distribution is constant, the default value equals TMINCYCLE')
 parser.add_argument('--rndseed', type=str, default='T',
                     choices=sorted({'True', 'T', 'False', 'F'}),
