@@ -451,6 +451,40 @@ for j in range(1, int(NUMSIM) + 1):
       rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
       delay4 = eval(rnd_delayDist)
 
+    if (delayDist == 'pareto'):
+      # node 1
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_1)'
+      delay1 = eval(rnd_delayDist)
+
+      # node 2
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_2)'
+      delay2 = eval(rnd_delayDist)
+
+      # node 3
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_3)'
+      delay3 = eval(rnd_delayDist)
+
+      # node 4
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
+      delay4 = eval(rnd_delayDist)
+
+    if (delayDist == 'weibull'):
+      # node 1
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_1)'
+      delay1 = eval(rnd_delayDist)
+
+      # node 2
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_2)'
+      delay2 = eval(rnd_delayDist)
+
+      # node 3
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_3)'
+      delay3 = eval(rnd_delayDist)
+
+      # node 4
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
+      delay4 = eval(rnd_delayDist)
+
     if (delayDist == 'constant'):
       # nodes 1, 2, 3, 4
       delay1 = delay_1
@@ -481,6 +515,14 @@ for j in range(1, int(NUMSIM) + 1):
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'poisson'):
+      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
+      TCYCLE = eval(rnd_cycleDist)
+
+    if (cycleDist == 'pareto'):
+      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
+      TCYCLE = eval(rnd_cycleDist)
+
+    if (cycleDist == 'weibull'):
       rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
