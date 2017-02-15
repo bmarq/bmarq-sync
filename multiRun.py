@@ -54,8 +54,8 @@ parser = argparse.ArgumentParser(
   description='Run several times the script bmarq-sync.py to evaluate the synchronization mechanism using all possible combinations of the mechanism parameters. Type <bmarq-sync-eval.py --help> to know all parameters available to retouch me!')
 parser.add_argument('--progname', default='./bmarq-sync-eval.py',
                     help='Name of python script (default is <bmarq-sync-eval.py>)')
-parser.add_argument('--runs', type=int, default=25, dest='runs', metavar="N",
-                    help='Run <PROGNAME>  RUNS times (default is 25)')
+parser.add_argument('--runs', type=int, default=1, dest='runs', metavar="N",
+                    help='Run <PROGNAME>  RUNS times (default is 1)')
 parser.add_argument('--cycles', type=long, default=1000000,
                     help='Maximum number of cycles per simulation (default is 10E5)')
 parser.add_argument('--version', action='version', version=__version__, help='Version number of multiRun.py')
@@ -63,11 +63,16 @@ parser.add_argument('--version', action='version', version=__version__, help='Ve
 args = parser.parse_args()
 
 # ***************************************************************************
-alpha = sorted({0.125, 0.50, 0.875})
-beta = sorted({1, 2, 3, 4, 5})
-gamma = sorted({0.5, 0.75, 0.80, 0.85, 0.90, 0.95})
-cycledist = sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson', 'pareto', 'weibull'})
-delaydist = sorted({'constant', 'uniform', 'normal', 'exponential', 'chisquare', 'poisson', 'pareto', 'weibull'})
+alpha = {0.125, 0.50, 0.875}
+beta = {1, 2, 3, 4, 5}
+# gamma = {0.5, 0.75, 0.80, 0.85, 0.90, 0.95}
+gamma = {0.50, 0.70, 0.80, 0.90}
+
+# cycledist = sorted({'constant', 'uniform', 'normal', 'exponential', 'pareto', 'poisson', 'weibull'})
+# delaydist = sorted({'constant', 'uniform', 'normal', 'exponential', 'pareto', 'poisson', 'weibull'})
+cycledist = sorted({'normal'})
+delaydist = sorted({'normal'})
+
 counter = 0
 
 # ***************************************************************************
@@ -95,7 +100,7 @@ for t in cycledist:
         for b in beta:
           cmd = args.progname + ' --numsim=' + str(args.runs) + ' --maxcycles=' + str(args.cycles) + ' --cycledist=' + str(t) + ' --delaydist=' + str(d) + ' --gamma=' + str(g) + ' --alpha=' + str(a) + ' --beta=' + str(b)
           #print cmd
-          # os.system(cmd)
+          os.system(cmd)
           counter += 1
 
 stop_t = time.clock()

@@ -82,12 +82,12 @@ global tsensors_on, tsensors_on_percent, tSensorsOnSuccess
 parser = argparse.ArgumentParser(description='Evaluation of the bmarq-sync sycnhronization mechanism\n')
 parser.add_argument('--version', action='version', version=__version__, help='Version number of eval_bmarq.py')
 parser.add_argument('--numsim', type=int, default=1, help='Number of simulations to perform (default is 1)')
-parser.add_argument('--maxcycles', type=long, default=100,
-                    help='Maximum number of cycles per simulation (default is 100)')
+parser.add_argument('--maxcycles', type=long, default=1000,
+                    help='Maximum number of cycles per simulation (default is 1000)')
 parser.add_argument('--alpha', type=float, default=0.125, choices=sorted({0.01, 0.125, 0.25, 0.50, 0.75, 0.875, 0.99}),
                     help='Value for alpha parameter (defaultis 0.125)')
 parser.add_argument('--beta', type=float, default=1, choices=sorted({1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5}),
-                    help='Value for beta parameter (default is 1')
+                    help='Value for beta parameter (default is 1)')
 parser.add_argument('--gamma', type=float, default=0.80, choices=sorted({0.5, 0.75, 0.80, 0.85, 0.90, 0.95}),
                     help='%% of TON for TSensorsOn success (default is 0.80)')
 parser.add_argument('--sigma', type=float, default=0.20, choices=sorted({0.0, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25}),
@@ -146,13 +146,13 @@ start_t = time.clock()
 # ***************************************************************************
 print 'Started processing at: %f ...\n' % (start_t)
 
-file_eval = open('./results/evaluation-parameters.txt', 'w')
+# file_eval = open('./results/evaluation-parameters.txt', 'w')
 f = (
       'number of simulations: %d\ncycle dist: %s\ndelay dist: %s\nalpha = %.3f\nbeta = %.1f\ngamma = %.2f\nsigma = %.2f\ntMinCycle = %.1f\ntMaxCycle = %.1f\nTON = %.1f\nMinimum time for simultaneous Sensors On for success consideration = %.2f (gamma * TON) \nnumber of cycles: %d\nIgnore first %.2f * 100 %%\n') % (
       NUMSIM, cycleDist, delayDist, alpha, beta, gamma, sigma, TMINCYCLE, TMAXCYCLE, TON, delta_success, MAXCICLES,
       discard)
-file_eval.write(f)
-file_eval.close()
+# file_eval.write(f)
+# file_eval.close()
 
 print f
 
@@ -216,29 +216,25 @@ for j in range(1, int(NUMSIM) + 1):
   # ***************************************************************************
   file_n = open('./results/data-nCycles.txt', 'w')
 
-  file_all = open(
-    './results/results-tcycle-dist_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
-      gamma) + '-alpha_' + str(alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
+  # file_all = open(
+  #  './results/results-tcycle-dist_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
+  #    gamma) + '-alpha_' + str(alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
 
-  file_sim_log = open(
-    './results/data-log-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(gamma) + '-alpha_' + str(
-      alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
+  # file_sim_log = open(
+  #  './results/data-log-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(gamma) + '-alpha_' + str(
+  #    alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay1 = open(
-    './results/data-delay-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
-      gamma) + '-alpha_' + str(alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay2 = open(
-    './results/data-delay-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
-      gamma) + '-alpha_' + str(alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node2-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay3 = open(
-    './results/data-delay-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
-      gamma) + '-alpha_' + str(alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node3-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_delay4 = open(
-    './results/data-delay-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
-      gamma) + '-alpha_' + str(alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-delay-node4-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_tSensorsOn = open(
     './results/data-tsensors_on-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
@@ -255,8 +251,7 @@ for j in range(1, int(NUMSIM) + 1):
       j) + '.txt', 'w')
 
   file_tcycle = open(
-    './results/data-tcycle-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(gamma) + '-alpha_' + str(
-      alpha) + '-beta_' + str(beta) + '-sim_' + str(j) + '.txt', 'w')
+    './results/data-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-sim_' + str(j) + '.txt', 'w')
 
   file_t_expected_node1 = open(
     './results/data-expected-node1-tcycle_' + cycleDist + '-delay_' + str(delayDist) + '-gamma_' + str(
@@ -340,16 +335,16 @@ for j in range(1, int(NUMSIM) + 1):
 
   # ***************************************************************************
   a = 'Simulation\t%d\n' % (j)
-  a = a.expandtabs(4)
-  file_all.write(a)
+  # a = a.expandtabs(4)
+  # file_all.write(a)
 
   a = 'Cycle\tNode\tDelay\tReal\tExpect.\tDELTA\tdn\trOn\trOff\tTSleep\tb.|dn|\tTcycle\tTON\tTOFF\tStatus\tTSensorsOn\tTSensorsOn(%)\n'
-  a = a.expandtabs(4)
-  file_all.write(a)
+  # a = a.expandtabs(4)
+  # file_all.write(a)
 
   a = 'TON\t%.3f\tTSensorsOnSuccess\t%.3f\n\n' % (round(TON, 3), round((gamma * TON), 3))
-  a = a.expandtabs(4)
-  file_sim_log.write(a)
+  # a = a.expandtabs(4)
+  # file_sim_log.write(a)
 
   # ***************************************************************************
   success_counter += 1
@@ -357,8 +352,8 @@ for j in range(1, int(NUMSIM) + 1):
 
   for n in range(0, int(MAXCICLES) + 1):
     a = 'Cycle\t%d\n' % (n)
-    a = a.expandtabs(4)
-    file_sim_log.write(a)
+    # a = a.expandtabs(4)
+    # file_sim_log.write(a)
 
     # ***************************************************************************
     # generate delays for nodes for next cycle
@@ -385,104 +380,104 @@ for j in range(1, int(NUMSIM) + 1):
 
     if (delayDist == 'normal'):
       # node 1
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_1, sigma * delay_1)'
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_1, (1 + sigma) * delay_1)'
       delay1 = eval(rnd_delayDist)
 
       # node 2
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_2, sigma * delay_2)'
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_2, (1 + sigma) * delay_2)'
       delay2 = eval(rnd_delayDist)
 
       # node 3
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_3, sigma * delay_3)'
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_3, (1 + sigma) * delay_3)'
       delay3 = eval(rnd_delayDist)
 
       # node 4
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_4, sigma * delay_4)'
+      rnd_delayDist = 'np.random.' + delayDist + '(delay_4, (1 + sigma) * delay_4)'
       delay4 = eval(rnd_delayDist)
 
     if (delayDist == 'exponential'):
       # node 1
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_1)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_1)'
       delay1 = eval(rnd_delayDist)
 
       # node 2
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_2)'
-      delay1 = eval(rnd_delayDist)
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_2)'
+      delay2 = eval(rnd_delayDist)
 
       # node 3
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_3)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_3)'
       delay3 = eval(rnd_delayDist)
 
       # node 4
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_4)'
       delay4 = eval(rnd_delayDist)
 
     if (delayDist == 'chisquare'):
       # node 1
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_1)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_1)'
       delay1 = eval(rnd_delayDist)
 
       # node 2
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_2)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_2)'
       delay2 = eval(rnd_delayDist)
 
       # node 3
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_3)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_3)'
       delay3 = eval(rnd_delayDist)
 
       # node 4
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_4)'
       delay4 = eval(rnd_delayDist)
 
     if (delayDist == 'poisson'):
       # node 1
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_1)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_1)'
       delay1 = eval(rnd_delayDist)
 
       # node 2
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_2)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_2)'
       delay2 = eval(rnd_delayDist)
 
       # node 3
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_3)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_3)'
       delay3 = eval(rnd_delayDist)
 
       # node 4
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_4)'
       delay4 = eval(rnd_delayDist)
 
     if (delayDist == 'pareto'):
       # node 1
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_1)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_1)'
       delay1 = eval(rnd_delayDist)
 
       # node 2
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_2)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_2)'
       delay2 = eval(rnd_delayDist)
 
       # node 3
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_3)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_3)'
       delay3 = eval(rnd_delayDist)
 
       # node 4
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_4)'
       delay4 = eval(rnd_delayDist)
 
     if (delayDist == 'weibull'):
       # node 1
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_1)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_1)'
       delay1 = eval(rnd_delayDist)
 
       # node 2
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_2)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_2)'
       delay2 = eval(rnd_delayDist)
 
       # node 3
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_3)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_3)'
       delay3 = eval(rnd_delayDist)
 
       # node 4
-      rnd_delayDist = 'np.random.' + delayDist + '(delay_4)'
+      rnd_delayDist = 'np.random.' + delayDist + '((1 + sigma) * delay_4)'
       delay4 = eval(rnd_delayDist)
 
     if (delayDist == 'constant'):
@@ -495,35 +490,35 @@ for j in range(1, int(NUMSIM) + 1):
     # ***************************************************************************
     # generate random TCycle next cycle
     if (RNDSEED == 'T' or RNDSEED == 'True'):
-      np.random.seed(n + 1)
-      np.random.RandomState(n + 1)
+      np.random.seed(j + n)  # (n + 1)
+      np.random.RandomState(j + n)  # (n + 1)
 
     if (cycleDist == 'uniform'):
-      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE, TMAXCYCLE)'
+      rnd_cycleDist = 'np.random.' + cycleDist + '((1 - sigma) * TMINCYCLE, (1 + sigma) * TMAXCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'normal'):
-      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE, sigma * TMAXCYCLE)'
+      rnd_cycleDist = 'np.random.' + cycleDist + '((1 - sigma) * TMINCYCLE, (1 + sigma) * TMAXCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'exponential'):
-      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
+      rnd_cycleDist = 'np.random.' + cycleDist + '((1 + sigma) * TMAXCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'chisquare'):
-      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
+      rnd_cycleDist = 'np.random.' + cycleDist + '((1 + sigma) * TMAXCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'poisson'):
-      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
+      rnd_cycleDist = 'np.random.' + cycleDist + '((1 + sigma) * TMAXCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'pareto'):
-      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
+      rnd_cycleDist = 'np.random.' + cycleDist + '((1 + sigma) * TMAXCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'weibull'):
-      rnd_cycleDist = 'np.random.' + cycleDist + '(TMINCYCLE)'
+      rnd_cycleDist = 'np.random.' + cycleDist + '((1 + sigma) * TMAXCYCLE)'
       TCYCLE = eval(rnd_cycleDist)
 
     if (cycleDist == 'constant'):
@@ -712,28 +707,29 @@ for j in range(1, int(NUMSIM) + 1):
       tSensorsOnSuccess = 'Fail'
 
     a = 'TCYCLE=\t%.3f\tTOFF\t%.3f\n' % (round(TCYCLE, 3), round(TOFF, 3))
-    a = a.expandtabs(4)
-    file_sim_log.write(a)
+    # a = a.expandtabs(4)
+    # file_sim_log.write(a)
 
     a = 'r1on_n\t%.3f\tr1off_n\t%.3f\n' % (round(r1on_n, 3), round(r1off_n, 3))
-    file_sim_log.write(a)
+    # file_sim_log.write(a)
 
     a = 'r2on_n\t%.3f\tr2off_n\t%.3f\n' % (round(r2on_n, 3), round(r2off_n, 3))
-    a = a.expandtabs(4)
-    file_sim_log.write(a)
+    # a = a.expandtabs(4)
+    # file_sim_log.write(a)
 
     a = 'r3on_n\t%.3f\tr3off_n\t%.3f\n' % (round(r3on_n, 3), round(r3off_n, 3))
-    a = a.expandtabs(4)
-    file_sim_log.write(a)
+    # a = a.expandtabs(4)
+    # file_sim_log.write(a)
 
     a = 'r4on_n\t%.3f\tr4off_n\t%.3f\n' % (round(r4on_n, 3), round(r4off_n, 3))
-    a = a.expandtabs(4)
-    file_sim_log.write(a)
+    # a = a.expandtabs(4)
+    # file_sim_log.write(a)
 
     a = 'lower_t\t%.3f\tupper_t\t%.3f\ttSensorsOn(s)\t%.3f\ttSensorsOn(%%)\t%.3f\t%s\n\n' % (
-    round(max(lower), 3), round(min(upper), 3), round(tsensors_on, 3), round(tsensors_on_percent, 3), tSensorsOnSuccess)
-    a = a.expandtabs(4)
-    file_sim_log.write(a)
+      round(max(lower), 3), round(min(upper), 3), round(tsensors_on, 3), round(tsensors_on_percent, 3),
+      tSensorsOnSuccess)
+    # a = a.expandtabs(4)
+    # file_sim_log.write(a)
 
     if (n >= int(MAXCICLES * discard)):
       n_counter += 1
@@ -744,7 +740,7 @@ for j in range(1, int(NUMSIM) + 1):
       success = (hit / (n_counter - 1)) * 100  # in percentage
 
       a = '{0}\n'.format(str(round(success, 3)))
-      a = a.expandtabs(4)
+      # a = a.expandtabs(4)
       file_tSensorsOn_success.write(a)
 
       # Node 1
@@ -784,31 +780,31 @@ for j in range(1, int(NUMSIM) + 1):
                                                                                                     str(round(TOFF, 3)),
                                                                                                     status1_n)
 
-      a = a.expandtabs(4)
-      file_all.write(a)
+      # a = a.expandtabs(4)
+      # file_all.write(a)
 
       b1 = '{0}\n'.format(str(round(delay1_n, 3)))
-      b1 = b1.expandtabs(4)
+      # b1 = b1.expandtabs(4)
       file_delay1.write(b1)
 
       c1 = '{0}\n'.format(str(round(sleepOffset1_n, 3)))
-      c1 = c1.expandtabs(4)
+      # c1 = c1.expandtabs(4)
       file_bdk_node1.write(c1)
 
       d1 = '{0}\n'.format(str(round(delta1_n, 3)))
-      d1 = d1.expandtabs(4)
+      # d1 = d1.expandtabs(4)
       file_t_delta_node1.write(d1)
 
       e1 = '{0}\n'.format(str(round(DELTA1_n, 3)))
-      e1 = e1.expandtabs(4)
+      # e1 = e1.expandtabs(4)
       file_t_DELTA_node1.write(e1)
 
       f1 = '{0}\n'.format(str(round(expected1_n, 3)))
-      f1 = f1.expandtabs(4)
+      # f1 = f1.expandtabs(4)
       file_t_expected_node1.write(f1)
 
       g1 = '{0}\n'.format(str(round(real1_n, 3)))
-      g1 = g1.expandtabs(4)
+      # g1 = g1.expandtabs(4)
       file_t_real_node1.write(g1)
 
 
@@ -842,31 +838,31 @@ for j in range(1, int(NUMSIM) + 1):
                                                                                                 str(round(TOFF, 3)),
                                                                                                 status2_n)
 
-      a = a.expandtabs(4)
-      file_all.write(a)
+      # a = a.expandtabs(4)
+      # file_all.write(a)
 
       b2 = '{0}\n'.format(str(round(delay2, 3)))
-      b2 = b2.expandtabs(4)
+      # b2 = b2.expandtabs(4)
       file_delay2.write(b2)
 
       c2 = '{0}\n'.format(str(round(sleepOffset2_n, 3)))
-      c2 = c2.expandtabs(4)
+      # c2 = c2.expandtabs(4)
       file_bdk_node2.write(c2)
 
       d2 = '{0}\n'.format(str(round(delta2_n, 3)))
-      d2 = d2.expandtabs(4)
+      # d2 = d2.expandtabs(4)
       file_t_delta_node2.write(d2)
 
       e2 = '{0}\n'.format(str(round(DELTA2_n, 3)))
-      e2 = e2.expandtabs(4)
+      # e2 = e2.expandtabs(4)
       file_t_DELTA_node2.write(e2)
 
       f2 = '{0}\n'.format(str(round(expected2_n, 3)))
-      f2 = f2.expandtabs(4)
+      # f2 = f2.expandtabs(4)
       file_t_expected_node2.write(f2)
 
       g2 = '{0}\n'.format(str(round(real2_n, 3)))
-      g2 = g2.expandtabs(4)
+      # g2 = g2.expandtabs(4)
       file_t_real_node2.write(g2)
 
 
@@ -891,31 +887,31 @@ for j in range(1, int(NUMSIM) + 1):
                                                                                                 str(round(TOFF, 3)),
                                                                                                 status3_n)
 
-      a = a.expandtabs(4)
-      file_all.write(a)
+      # a = a.expandtabs(4)
+      # file_all.write(a)
 
       b3 = '{0}\n'.format(str(round(delay3, 3)))
-      b3 = b3.expandtabs(4)
+      # b3 = b3.expandtabs(4)
       file_delay3.write(b3)
 
       c3 = '{0}\n'.format(str(round(sleepOffset3_n, 3)))
-      c3 = c3.expandtabs(4)
+      # c3 = c3.expandtabs(4)
       file_bdk_node3.write(c3)
 
       d3 = '{0}\n'.format(str(round(delta3_n, 3)))
-      d3 = d3.expandtabs(4)
+      # d3 = d3.expandtabs(4)
       file_t_delta_node3.write(d3)
 
       e3 = '{0}\n'.format(str(round(DELTA3_n, 3)))
-      e3 = e3.expandtabs(4)
+      # e3 = e3.expandtabs(4)
       file_t_DELTA_node3.write(e3)
 
       f3 = '{0}\n'.format(str(round(expected3_n, 3)))
-      f3 = f3.expandtabs(4)
+      # f3 = f3.expandtabs(4)
       file_t_expected_node3.write(f3)
 
       g3 = '{0}\n'.format(str(round(real3_n, 3)))
-      g3 = g3.expandtabs(4)
+      # g3 = g3.expandtabs(4)
       file_t_real_node3.write(g3)
 
       # Node 4
@@ -972,31 +968,31 @@ for j in range(1, int(NUMSIM) + 1):
                                                                                                                 tsensors_on_percent,
                                                                                                                 3)))
 
-      a = a.expandtabs(4)
-      file_all.write(a)
+      # a = a.expandtabs(4)
+      # file_all.write(a)
 
       b4 = '{0}\n'.format(str(round(delay4, 3)))
-      b4 = b4.expandtabs(4)
+      # b4 = b4.expandtabs(4)
       file_delay4.write(b4)
 
       d4 = '{0}\n'.format(str(round(sleepOffset4_n, 3)))
-      d4 = d4.expandtabs(4)
+      # d4 = d4.expandtabs(4)
       file_bdk_node4.write(d4)
 
       e4 = '{0}\n'.format(str(round(delta4_n, 3)))
-      e4 = e4.expandtabs(4)
+      # e4 = e4.expandtabs(4)
       file_t_delta_node4.write(e4)
 
       f4 = '{0}\n'.format(str(round(DELTA4_n, 3)))
-      f4 = f4.expandtabs(4)
+      # f4 = f4.expandtabs(4)
       file_t_DELTA_node4.write(f4)
 
       f4 = '{0}\n'.format(str(round(expected4_n, 3)))
-      f4 = f4.expandtabs(4)
+      # f4 = f4.expandtabs(4)
       file_t_expected_node4.write(f4)
 
       g4 = '{0}\n'.format(str(round(real4_n, 3)))
-      g4 = g4.expandtabs(4)
+      # g4 = g4.expandtabs(4)
       file_t_real_node4.write(g4)
 
       # ***************************************************************************
@@ -1005,26 +1001,26 @@ for j in range(1, int(NUMSIM) + 1):
       file_n.write(f)
 
       a = '{0}\n'.format(str(round(TCYCLE, 3)))
-      a = a.expandtabs(4)
+      # a = a.expandtabs(4)
       file_tcycle.write(a)
 
       c1 = '{0}\n'.format(str(round(tsensors_on, 3)))
-      c1 = c1.expandtabs(4)
+      # c1 = c1.expandtabs(4)
       file_tSensorsOn.write(c1)
 
       c2 = '{0}\n'.format(str(round(tsensors_on_percent, 3)))
-      c2 = c2.expandtabs(4)
+      # c2 = c2.expandtabs(4)
       file_tSensorsOn_percent.write(c2)
 
   a = '{0}\t{1}\n'.format('Total hit success', str(round(success, 3)))
-  a = a.expandtabs(4)
-  file_all.write(a)
+  # a = a.expandtabs(4)
+  # file_all.write(a)
 
   print 'Simulation %d: hit = %d, n. cycles = %d, success = %.3f' % (j, hit, (n_counter - 1), success)
 
   file_n.close()
-  file_sim_log.close()
-  file_all.close()
+  # file_sim_log.close()
+  # file_all.close()
 
   file_t_expected_node1.close()
   file_t_expected_node2.close()
