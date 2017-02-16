@@ -41,7 +41,6 @@ import argparse
 import subprocess
 import time
 import os
-import sys
 from pylab import *
 
 global alpha, beta, gamma, counter
@@ -58,22 +57,26 @@ parser.add_argument('--runs', type=int, default=1, dest='runs', metavar="N",
                     help='Run <PROGNAME>  RUNS times (default is 1)')
 parser.add_argument('--cycles', type=long, default=1000000,
                     help='Maximum number of cycles per simulation (default is 10E5)')
+parser.add_argument('--combination', type=str, default='F',
+                    choices=sorted({'True', 'T', 'False', 'F'}),
+                    help='Use combination of distributions? (T)rue/(F)alse (default is (F)alse)')
 parser.add_argument('--version', action='version', version=__version__, help='Version number of multiRun.py')
 
 args = parser.parse_args()
+COMBINATION = args.combination
 
 # ***************************************************************************
-alpha = {0.125, 0.50, 0.875}
-beta = {1, 2, 3, 4, 5}
-# gamma = {0.5, 0.75, 0.80, 0.85, 0.90, 0.95}
-gamma = {0.50, 0.70, 0.80, 0.90}
 
-# cycledist = sorted({'constant', 'uniform', 'normal', 'exponential', 'pareto', 'poisson', 'weibull'})
-# delaydist = sorted({'constant', 'uniform', 'normal', 'exponential', 'pareto', 'poisson', 'weibull'})
-cycledist = sorted({'normal'})
-delaydist = sorted({'normal'})
+# cycledist = sorted({'constant', 'uniform', 'normal', 'exponential', 'pareto', 'poisson', 'weibull', 'chisquare'})
+# delaydist = sorted({'constant', 'uniform', 'normal', 'exponential', 'pareto', 'poisson', 'weibull, 'chisquare''})
+cycledist = sorted({'uniform', 'normal', 'exponential', 'poisson', 'weibull', 'chisquare'})
+delaydist = sorted({'uniform', 'normal', 'exponential', 'poisson', 'weibull', 'chisquare'})
 
 counter = 0
+
+alpha = sorted({0.125, 0.50, 0.875})
+beta = sorted({1, 2, 3, 4, 5})
+gamma = sorted({0.50, 0.70, 0.80, 0.90})
 
 # ***************************************************************************
 # Main block of the program
@@ -94,12 +97,28 @@ if not os.path.exists('graphs'):
   os.makedirs('graphs')
 
 for t in cycledist:
-  for d in delaydist:
+  if (COMBINATION == 'T' or COMBINATION == 'True'):
+    for d in delaydist:
+      for g in gamma:
+        for a in alpha:
+          for b in beta:
+            cmd = args.progname + ' --numsim=' + str(args.runs) + ' --maxcycles=' + str(
+              args.cycles) + ' --cycledist=' + str(t) + ' --delaydist=' + str(d) + ' --gamma=' + str(
+              g) + ' --alpha=' + str(a) + ' --beta=' + str(b)
+            # print cmd
+            os.system(cmd)
+            counter += 1
+  else:
+    #alpha = {0.125}
+    #beta = {1}
+    #gamma = {0.8}
     for g in gamma:
       for a in alpha:
         for b in beta:
-          cmd = args.progname + ' --numsim=' + str(args.runs) + ' --maxcycles=' + str(args.cycles) + ' --cycledist=' + str(t) + ' --delaydist=' + str(d) + ' --gamma=' + str(g) + ' --alpha=' + str(a) + ' --beta=' + str(b)
-          #print cmd
+          cmd = args.progname + ' --numsim=' + str(args.runs) + ' --maxcycles=' + str(
+            args.cycles) + ' --cycledist=' + str(t) + ' --delaydist=' + str(t) + ' --gamma=' + str(
+            g) + ' --alpha=' + str(a) + ' --beta=' + str(b)
+          print cmd
           os.system(cmd)
           counter += 1
 

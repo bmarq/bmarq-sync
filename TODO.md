@@ -18,4 +18,10 @@ TODO - list of things to do for bmarq-sync-eval:
 		Fixed problem with the mechanism functionalities  with respect to different duty cycles random generation.
 2. Allow for predefined random seeds
 
+
+16 February  2017
+=================
+1. Bug fixes:
+		random numbers generation fixed.
+2. Scripts to run simulations and to plot results 
 */
